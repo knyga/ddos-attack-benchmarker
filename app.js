@@ -39,8 +39,8 @@ const defaultState = {
   status: Status.Stopped,
   server: null,
   time: {
-    startedAt: null,
-    stoppedAt: null,
+    firstRequestAt: null,
+    lastRequestAt: null,
   },
   benchmarkServer: {
     type: null,
@@ -58,13 +58,13 @@ const defaultState = {
 let globalState = cloneDeep(defaultState)
 
 function getStats(state) {
-  const upperBound = state.time.stoppedAt || new Date()
-  const { time: { startedAt }, stats } = state
-  if (startedAt === null) {
+  const upperBound = state.time.lastRequestAt || new Date()
+  const { time: { firstRequestAt }, stats } = state
+  if (firstRequestAt === null) {
     return null
   }
 
-  const ms = upperBound.getTime() - startedAt.getTime()
+  const ms = upperBound.getTime() - firstRequestAt.getTime()
   const seconds = Math.floor(ms / 1000)
   return {
     type: state.benchmarkServer.type,
@@ -96,6 +96,12 @@ function startHTTPBenchmarkServer(state, cb = () => {}) {
     const bytes = req.socket.bytesRead || req.get('content-length') || 0
     state.stats.requests.total.count += 1
     state.stats.requests.total.bytes += bytes
+
+    if (state.time.firstRequestAt === null) {
+      state.time.firstRequestAt = new Date()
+    }
+    state.time.lastRequestAt = new Date()
+
     res.status(200).send()
   })
 
@@ -112,7 +118,6 @@ function startHTTPBenchmarkServer(state, cb = () => {}) {
 
 function startBenchmarkServer(state, cb) {
   globalState.status = Status.Started
-  globalState.time.startedAt = new Date()
 
   const { type } = state.benchmarkServer
   switch (type) {
@@ -124,7 +129,6 @@ function startBenchmarkServer(state, cb) {
 
 function stopBenchmarkServer(state, cb = () => {}) {
   state.status = Status.Stopped
-  globalState.time.stoppedAt = new Date()
 
   const { type } = state.benchmarkServer
   switch (type) {
@@ -201,7 +205,16 @@ httpControlAPI.get('/stop', (req, res) => {
 
   try {
     stopBenchmarkServer(globalState, () => {
-      res.status(200).send(getStats(globalState))
+      const data = getStats(globalState)
+      if (data === null) {
+        // TODO refactor response formation
+        res.status(200).send({ code: 400, message: 'No stats' })
+      } else {
+        res.status(200).send({
+          code: 200,
+          data,
+        })
+      }
     })
   } catch(e) {
     res.status(500).send({ code: 500, message: e.message })
@@ -210,14 +223,23 @@ httpControlAPI.get('/stop', (req, res) => {
 
 httpControlAPI.get('/stats', (req, res) => {
   try {
-    res.status(200).send(getStats(globalState))
+    const data = getStats(globalState)
+    if (data === null) {
+      // TODO refactor response formation
+      res.status(200).send({ code: 400, message: 'No stats' })
+    } else {
+      res.status(200).send({
+        code: 200,
+        data,
+      })
+    }
   } catch (e) {
     res.status(500).send({ code: 500, message: e.message })
   }
 })
 
-httpControlAPI.use(function (req, res, next) {
-  res.status(404).send({ code: 404 })
+httpControlAPI.use(function (req, res) {
+  res.status(404).send({ code: 404, message: 'Not Found' })
 })
 
 httpControlAPI

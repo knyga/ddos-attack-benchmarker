@@ -14,19 +14,21 @@ HTTP/TCP/UDP server to generate benchmark for benchmark tools.
 
 ### HTTP Control API is REST API with methods
 1. `HTTP GET /start/:type/:port/:duration?`. 
-1.1. Request resets Stats and boots up Server of Type on the Port. It changes Status to `Started`.
-1.2. If Status is not `Stopped` then it will return 400 HTTP code. Only one Server could run at the same time.
-1.3. If case of success then it will return 200 HTTP code.
-1.4. If Server can't be started then it will return 403 HTTP code.
-1.5. Duration is an optional param. It specifies lifetime of the Benchmark Server in seconds.
+* Request resets Stats and boots up Server of Type on the Port. It changes Status to `Started`.
+* If Status is not `Stopped` then it will return 400 HTTP code. Only one Server could run at the same time.
+* If case of success then it will return 200 HTTP code.
+* If Server can't be started then it will return 403 HTTP code.
+* Duration is an optional param. It specifies lifetime of the Benchmark Server in seconds.
+* Benchmark Server session start time (lower boundary) will correspond to the first request.
 2. `HTTP GET /stop`.
-2.1. Request stops Stats accumulation, kills Server, and returns Stats. It changes Status to `Stopped`.
-2.2. If Status is not `Started` then it will return 400 HTTP code.
-2.3. If case of success it will return 200 HTTP code and Stats object.
+* Request stops Stats accumulation, kills Server, and returns Stats. It changes Status to `Stopped`.
+* If Status is not `Started` then it will return 400 HTTP code.
+* If case of success it will return 200 HTTP code and Stats object.
 3. `HTTP GET /stats`.
 3.1. Request returns latests Stats accumulation without changing State.
-3.2. If Status is not `Started` then it will return 400 HTTP code.
-3.3. If case of success it will return 200 HTTP code and Stats object.
+* If Status is not `Started` then it will return 400 HTTP code.
+* If case of success it will return 200 HTTP code and Stats object.
+* Benchmark Server session stop time (upper boundary) will correspond to the latests request.
 
 ### Object details
 ```typescript
