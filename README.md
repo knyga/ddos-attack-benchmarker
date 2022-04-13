@@ -54,7 +54,7 @@ interface Stats {
       bytes: Number,
     },
     average: {
-      perSeconds: {
+      perSecond: {
         count: Number,
         bytes: Number,
       },
