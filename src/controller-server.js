@@ -1,7 +1,12 @@
+const Joi = require('joi')
+const validator = require('express-joi-validation').createValidator({})
 const express = require('express')
 const { Status, Type, cloneDefaultState, getStats } = require('./state')
 const { startBenchmarkServer, stopBenchmarkServer } = require('./benchmark-servers')
 
+function paramsSchema(joi) {
+  return validator.params(Joi.object(joi))
+}
 
 function respond(resp, body) {
   const code = body.code || 200
@@ -23,24 +28,12 @@ function startControllerServer(config) {
   }
 
   const httpController = express()
-  // TODO add validation module, like joi
-  httpController.get('/start/:type/:port/:duration?', (req, res) => {
-    const { type } = req.params
-    const port = Number.parseInt(req.params.port)
-    const duration = Number.parseInt(req.params.duration)
-    if (globalState.status !== Status.Stopped) {
-      return respond(res, { code: 400, message: 'Status should be Stopped before Start' })
-    }
-    if (!Object.values(Type).includes(type)) {
-      return respond(res, { code: 400, message: `Provided ${type}, but allowed types are: ${Object.values(Type)}` })
-    }
-    if (Number.isNaN(port) || port < 1) {
-      return respond(res, { code: 400, message: 'Port is not valid' })
-    }
-    if (req.params.duration && (Number.isNaN(duration) || duration < 1)) {
-      return respond(res, { code: 400, message: 'Duration is not valid' })
-    }
-
+  httpController.get('/start/:type/:port/:duration?', paramsSchema({
+    type: Joi.string().valid(...Object.values(Type)).required(),
+    port: Joi.number().port().required(),
+    duration: Joi.number().min(1),
+  }), (req, res) => {
+    const { type, port, duration } = req.params
     resetGlobalState()
     globalState.benchmarkServer.type = type
     globalState.benchmarkServer.port = port

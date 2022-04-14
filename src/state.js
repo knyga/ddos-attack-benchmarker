@@ -1,7 +1,7 @@
 const cloneDeep = require('lodash.clonedeep')
 
 const Status = {
-  Started: Symbol('Started'),
+  Started: 'Started',
   Stopped: Symbol('Stopped'),
 }
 

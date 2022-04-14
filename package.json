@@ -12,6 +12,8 @@
   "dependencies": {
     "argparse": "^2.0.1",
     "express": "^4.17.3",
+    "express-joi-validation": "^5.0.1",
+    "joi": "^17.6.0",
     "lodash.clonedeep": "^4.5.0"
   }
 }
