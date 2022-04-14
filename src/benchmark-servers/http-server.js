@@ -22,7 +22,7 @@ function start(state, cb = () => { }) {
       message: `HTTP Control API is listening on port ${state.benchmarkServer.port}`,
     }))
     .on('error', (err) => cb({
-      code: 200,
+      code: 500,
       message: `HTTP Benchmark Server stopped with error ${err}`,
     }))
 }
