@@ -1,5 +1,6 @@
 const Net = require('net')
 
+
 function start(state, cb = () => { }) {
   const TCPBenchmarkAPI = new Net.Server()
   TCPBenchmarkAPI.on('connection', (socket) => {
@@ -22,7 +23,7 @@ Content-Type: text/plain; charset=utf-8
   return TCPBenchmarkAPI
     .listen(state.benchmarkServer.port, () => cb({
       code: 200,
-      message: `TCP Control API is listening on port ${state.benchmarkServer.port}`,
+      message: `TCP Benchmark Server is listening on port ${state.benchmarkServer.port}`,
     }))
     .on('error', (err) => cb({
       code: 500,
