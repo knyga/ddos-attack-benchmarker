@@ -24,7 +24,8 @@ function start(state, cb = () => { }) {
 
       UDPBenchmarkAPI.send(msgResponse, 0, msgResponse.length, remote.port, remote.address)
     })
-  UDPBenchmarkAPI.bind(state.benchmarkServer.port)
+  
+  return UDPBenchmarkAPI.bind(state.benchmarkServer.port)
 }
 
 module.exports = {
