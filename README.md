@@ -25,7 +25,7 @@ HTTP/TCP/UDP server to generate benchmark for benchmark tools.
 * If Status is not `Started` then it will return 400 HTTP code.
 * If case of success it will return 200 HTTP code and Stats object.
 3. `HTTP GET /stats`.
-3.1. Request returns latests Stats accumulation without changing State.
+* Request returns latests Stats accumulation without changing State.
 * If Status is not `Started` then it will return 400 HTTP code.
 * If case of success it will return 200 HTTP code and Stats object.
 * Benchmark Server session stop time (upper boundary) will correspond to the latests request.
