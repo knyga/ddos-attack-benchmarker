@@ -1,7 +1,7 @@
 {
   "name": "ddos-attack-benchmarker",
   "version": "1.0.0",
-  "description": "ddos-attack-benchmarker HTTP/TCP/UDP server to generate benchmark for benchmark tools.",
+  "description": "HTTP/TCP/UDP server to generate benchmark details for DDoS (benchmark) tools",
   "main": "app.js",
   "scripts": {
     "start": "node app"

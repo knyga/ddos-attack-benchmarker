@@ -1,5 +1,6 @@
-# DDOS Attack Benchmarker
-HTTP/TCP/UDP server to generate benchmark for benchmark tools.
+# DDoS Attack Benchmarker
+HTTP/TCP/UDP server to generate benchmark details for DDoS (benchmark) tools.
+It helps to understand what DDoS (benchmark) tool is working and how well it performs.
 
 ## Where to find benchmark tools
 * https://github.com/denji/awesome-http-benchmark
