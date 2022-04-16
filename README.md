@@ -1,4 +1,4 @@
-# DDOS Load Testing Server
+# DDOS Attack Benchmarker
 HTTP/TCP/UDP server to generate benchmark for benchmark tools.
 
 ## Where to find benchmark tools
@@ -13,19 +13,25 @@ HTTP/TCP/UDP server to generate benchmark for benchmark tools.
 2. Benchmark Server. It is started with start request for HTTP Control API.
 
 ### HTTP Control API is REST API with methods
-1. `HTTP GET /start/:type/:port/:duration?`. 
+1. `HTTP GET /start?type=(http|tcp|udp)&port=$PORT_NUMBER&view=(text|json)&duration=$DURATION_IN_SECONDS`.
 * Request resets Stats and boots up Server of Type on the Port. It changes Status to `Started`.
+* `type` is a type of Benchmark Server. Supported types: `http`, `tcp`, `udp`. Required.
+* `port` is a port number for Benchmark Server. Required.
+* `view` is type of response format. Default is `json`. Optional.
+* `duration` is lifetime of the Benchmark Server. By default Benchmark Server listens while stop is not requested. Optional.
 * If Status is not `Stopped` then it will return 400 HTTP code. Only one Server could run at the same time.
 * If case of success then it will return 200 HTTP code.
 * If Server can't be started then it will return 403 HTTP code.
 * Duration is an optional param. It specifies lifetime of the Benchmark Server in seconds.
 * Benchmark Server session start time (lower boundary) will correspond to the first request.
-2. `HTTP GET /stop`.
+2. `HTTP GET /stop?view=(text|json)`.
 * Request stops Stats accumulation, kills Server, and returns Stats. It changes Status to `Stopped`.
+* `view` is type of response format. Default is `json`. Optional.
 * If Status is not `Started` then it will return 400 HTTP code.
 * If case of success it will return 200 HTTP code and Stats object.
-3. `HTTP GET /stats`.
+3. `HTTP GET /stats?view=(text|json)`.
 * Request returns latests Stats accumulation without changing State.
+* `view` is type of response format. Default is `json`. Optional.
 * If Status is not `Started` then it will return 400 HTTP code.
 * If case of success it will return 200 HTTP code and Stats object.
 * Benchmark Server session stop time (upper boundary) will correspond to the latests request.
@@ -80,13 +86,51 @@ To start HTTP Control API on port 8070: `npm run start -- -p 8070` or `node app 
 #### Usage example
 ```bash
 node app -p 8070 # start in separate process or daemon
-curl http://localhost:8070/start/http/5555
+
+curl http://localhost:8070/start?type=http&port=5555
 # {"code":200,"message":"HTTP Control API is listening on port 5555"}
 curl http://localhost:5555
 curl http://localhost:5555
 curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
 curl http://localhost:8070/stop
-# {"code":200,"message":"HTTP Control API is listening on port 5555"}{"code":200,"data":{"type":"http","duration":{"seconds":0},"requests":{"average":{"perSecond":{"count":null,"bytes":null}},"total":{"count":3,"bytes":234}}}}
+# {"code":200,"data":{"type":"http","duration":{"seconds":0.03},"requests":{"average":{"perSecond":{"count":147.05882352941177,"bytes":11470.588235294117}},"total":{"count":5,"bytes":390}}}}
+```
+
+If you prefer response in text format:
+```bash
+curl http://localhost:8070/start?type=http&port=5555&view=text
+# HTTP Benchmark Server is listening on port 5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:8070/stop&view=text
+# Benchmark server type: http
+# Execution duration (seconds): 0.03
+# Total request number: 5
+# Total received bytes: 390
+# Average number of requests per second: 151.52
+# Average number of received bytes per second: 11818.18
+```
+
+It is not required to stop server to get stats:
+```bash
+curl http://localhost:8070/start?type=http&port=5555&view=text
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:8070/stats?view=text
+# Benchmark server type: http
+# Execution duration (seconds): 0.03
+# Total request number: 5
+# Total received bytes: 390
+# Average number of requests per second: 161.29
+# Average number of received bytes per second: 12580.65
 ```
 
 #### Remarks
@@ -106,13 +150,8 @@ To start HTTP Control API on port 8080 and preplanned exposed port (UDP) for Ben
 #### Usage example
 ```bash
 docker run -it -p 8080:80/tcp -p 5555:5555/tcp --rm oknyga/ddos-attack-benchmarker:latest -p 80 # start in separate process or daemon
-curl http://localhost:8070/start/http/5555
-# {"code":200,"message":"HTTP Control API is listening on port 5555"}
-curl http://localhost:5555
-curl http://localhost:5555
-curl http://localhost:5555
-curl http://localhost:8070/stop
-# {"code":200,"message":"HTTP Control API is listening on port 5555"}{"code":200,"data":{"type":"http","duration":{"seconds":0},"requests":{"average":{"perSecond":{"count":null,"bytes":null}},"total":{"count":3,"bytes":234}}}}
+
+# ... same as in (Without Docker)
 ```
 
 #### Remarks
