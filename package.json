@@ -1,7 +1,7 @@
 {
-  "name": "ddos-load-testing-server",
+  "name": "ddos-attack-benchmarker",
   "version": "1.0.0",
-  "description": "ddos-load-testing-server HTTP/TCP/UDP server to generate benchmark for benchmark tools.",
+  "description": "ddos-attack-benchmarker HTTP/TCP/UDP server to generate benchmark for benchmark tools.",
   "main": "app.js",
   "scripts": {
     "start": "node app"
@@ -15,5 +15,9 @@
     "express-joi-validation": "^5.0.1",
     "joi": "^17.6.0",
     "lodash.clonedeep": "^4.5.0"
+  },
+  "engines": {
+    "npm": ">=6.14.15",
+    "node": ">=14.17.6"
   }
 }

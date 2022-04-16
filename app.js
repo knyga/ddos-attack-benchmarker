@@ -1,13 +1,9 @@
 const { parser } = require('./src/args-parser')
 const { startControllerServer } = require('./src/controller-server')
 
-const config = {
-  port: 8080,
-}
-const parsed_args = parser.parse_args()
+const config = parser.parse_args()
+const server = startControllerServer(config)
 
-if (parsed_args.port) {
-  config.port = parsed_args.port
+if(config.duration) {
+  setTimeout(() => server.close(), config.duration * 1000)
 }
-
-startControllerServer(config)
