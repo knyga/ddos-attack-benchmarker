@@ -6,7 +6,12 @@ const parser = new ArgumentParser({
 })
 parser.add_argument('-p', '--port', {
   type: 'int',
+  default: 80,
   help: 'Port for HTTP Control API'
+})
+parser.add_argument('-d', '--duration', {
+  type: 'int',
+  help: 'Lifetime in seconds'
 })
 
 module.exports = {

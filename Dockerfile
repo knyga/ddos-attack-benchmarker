@@ -1,8 +1,9 @@
-FROM node:14.19-alpine
+FROM node:14.19
 
 COPY ./ /app
 WORKDIR /app
 
-RUN npm i
+RUN npm ci
+RUN which node
 
-ENTRYPOINT ["node app.js"]
+ENTRYPOINT ["node", "app.js"]

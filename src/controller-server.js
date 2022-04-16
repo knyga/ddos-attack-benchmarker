@@ -93,7 +93,7 @@ function startControllerServer(config) {
   })
 
   return httpController
-    .listen(config.port, () => console.log(`HTTP Control API is listening on port ${config.port}`))
+    .listen(config.port, () => console.log(`HTTP Control API is listening on port ${config.port}${config.duration ? (' for ' + config.duration + ' seconds') : ''}`))
     .on('error', (err) => console.log(`HTTP Control API stopped with error ${err}`))
 }
 

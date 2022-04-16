@@ -68,8 +68,8 @@ interface Stats {
 ### Without Docker
 
 #### Prerequisites
-1. Node.js >= 14.17.6.
-2. NPM >= 6.14.15.
+1. Node.js >= 14.17.6 and < 15.
+2. NPM >= 6.14.15 and < 7.
 
 #### Installation
 1. `npm i`.
@@ -89,7 +89,8 @@ Docker is not implemented yet.
 1. Docker.
 
 #### Start
-1. To start HTTP Control API on port 8070 and preplanned exposed port (UDP) for Benchmark Server 8053: `docker run -it --rm oknyga/ddos-load-testing-server:latest -p 8070:8080/tcp -p 8053:8053/udp`.
+1. To start HTTP Control API on port 8080 and preplanned exposed port (UDP) for Benchmark Server 8053: `docker run -it --rm oknyga/ddos-attack-benchmarker:latest -p 8080:8080/tcp -p 8053:8053/udp`.
+2. N
 
 #### Remarks
 1. Same remarks as for Without Docker.
