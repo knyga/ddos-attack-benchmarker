@@ -4,8 +4,8 @@ It helps to understand what DDoS (benchmark) tool is working and how well it per
 
 ## Where to find benchmark tools
 * https://github.com/denji/awesome-http-benchmark
-* https://github.com/MatrixTM/MHDDoS
 * https://github.com/alexmon1989/russia_ddos
+* https://github.com/MatrixTM/MHDDoS
 
 ## API
 
@@ -108,7 +108,7 @@ curl http://localhost:5555
 curl http://localhost:5555
 curl http://localhost:5555
 curl http://localhost:5555
-curl http://localhost:8070/stop&view=text
+curl http://localhost:8070/stop?view=text
 # Benchmark server type: http
 # Execution duration (seconds): 0.03
 # Total request number: 5
@@ -135,7 +135,7 @@ curl http://localhost:8070/stats?view=text
 ```
 
 #### Remarks
-1. Default HTTP Control API port in 8080.
+1. Default HTTP Control API port in 80.
 2. Access to some ports might require root permissions.
 3. You can't start multiple servers of same type.
 4. Known bug. UDP Benchmark Server doesn't accept more than 9216 bytes per message.
