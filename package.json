@@ -1,6 +1,6 @@
 {
   "name": "ddos-attack-benchmarker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HTTP/TCP/UDP server to generate benchmark details for DDoS (benchmark) tools",
   "main": "app.js",
   "scripts": {
