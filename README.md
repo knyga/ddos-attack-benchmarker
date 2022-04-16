@@ -108,7 +108,7 @@ curl http://localhost:5555
 curl http://localhost:5555
 curl http://localhost:5555
 curl http://localhost:5555
-curl http://localhost:8070/stop&view=text
+curl http://localhost:8070/stop?view=text
 # Benchmark server type: http
 # Execution duration (seconds): 0.03
 # Total request number: 5
