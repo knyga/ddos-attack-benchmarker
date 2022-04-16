@@ -79,7 +79,7 @@ interface Stats {
 2. NPM >= 6.14.15 and < 7.
 
 #### Installation
-`npm i`.
+`npm ci`.
 
 #### Start
 To start HTTP Control API on port 8070: `npm run start -- -p 8070` or `node app -p 8070`.
