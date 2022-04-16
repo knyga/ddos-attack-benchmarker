@@ -72,10 +72,22 @@ interface Stats {
 2. NPM >= 6.14.15 and < 7.
 
 #### Installation
-1. `npm i`.
+`npm i`.
 
 #### Start
-1. To start HTTP Control API on port 8070: `npm run start -- -p 8070` or `node app -p 8070`.
+To start HTTP Control API on port 8070: `npm run start -- -p 8070` or `node app -p 8070`.
+
+#### Usage example
+```bash
+node app -p 8070 # start in separate process or daemon
+curl http://localhost:8070/start/http/5555
+# {"code":200,"message":"HTTP Control API is listening on port 5555"}
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:8070/stop
+# {"code":200,"message":"HTTP Control API is listening on port 5555"}{"code":200,"data":{"type":"http","duration":{"seconds":0},"requests":{"average":{"perSecond":{"count":null,"bytes":null}},"total":{"count":3,"bytes":234}}}}
+```
 
 #### Remarks
 1. Default HTTP Control API port in 8080.
@@ -86,10 +98,22 @@ interface Stats {
 Docker is not implemented yet.
 
 #### Prerequisites
-1. Docker.
+Docker.
 
 #### Start
-1. To start HTTP Control API on port 8080 and preplanned exposed port (UDP) for Benchmark Server 8053: `docker run -it -p 8080:80/tcp -p 8053:53/udp --rm oknyga/ddos-attack-benchmarker:latest -p 80`.
+To start HTTP Control API on port 8080 and preplanned exposed port (UDP) for Benchmark Server 8053: `docker run -it -p 8080:80/tcp -p 8053:53/udp --rm oknyga/ddos-attack-benchmarker:latest -p 80`.
+
+#### Usage example
+```bash
+docker run -it -p 8080:80/tcp -p 5555:5555/tcp --rm oknyga/ddos-attack-benchmarker:latest -p 80 # start in separate process or daemon
+curl http://localhost:8070/start/http/5555
+# {"code":200,"message":"HTTP Control API is listening on port 5555"}
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:5555
+curl http://localhost:8070/stop
+# {"code":200,"message":"HTTP Control API is listening on port 5555"}{"code":200,"data":{"type":"http","duration":{"seconds":0},"requests":{"average":{"perSecond":{"count":null,"bytes":null}},"total":{"count":3,"bytes":234}}}}
+```
 
 #### Remarks
 1. Same remarks as for Without Docker.
