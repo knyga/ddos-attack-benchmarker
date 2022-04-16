@@ -89,8 +89,7 @@ Docker is not implemented yet.
 1. Docker.
 
 #### Start
-1. To start HTTP Control API on port 8080 and preplanned exposed port (UDP) for Benchmark Server 8053: `docker run -it --rm oknyga/ddos-attack-benchmarker:latest -p 8080:8080/tcp -p 8053:8053/udp`.
-2. N
+1. To start HTTP Control API on port 8080 and preplanned exposed port (UDP) for Benchmark Server 8053: `docker run -it -p 8080:80/tcp -p 8053:53/udp --rm oknyga/ddos-attack-benchmarker:latest -p 80`.
 
 #### Remarks
 1. Same remarks as for Without Docker.
