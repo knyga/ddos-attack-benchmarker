@@ -4,6 +4,5 @@ COPY ./ /app
 WORKDIR /app
 
 RUN npm ci
-RUN which node
 
 ENTRYPOINT ["node", "app.js"]
