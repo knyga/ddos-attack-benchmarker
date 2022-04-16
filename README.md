@@ -18,7 +18,7 @@ HTTP/TCP/UDP server to generate benchmark for benchmark tools.
 * `type` is a type of Benchmark Server. Supported types: `http`, `tcp`, `udp`. Required.
 * `port` is a port number for Benchmark Server. Required.
 * `view` is type of response format. Default is `json`. Optional.
-* `duration` is lifetime of the Benchmark Server. By default Benchmark Server listens while stop is not requested. Optional.
+* `duration` is lifetime in seconds of the Benchmark Server. By default Benchmark Server listens while stop is not requested. Optional.
 * If Status is not `Stopped` then it will return 400 HTTP code. Only one Server could run at the same time.
 * If case of success then it will return 200 HTTP code.
 * If Server can't be started then it will return 403 HTTP code.
