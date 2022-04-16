@@ -5,6 +5,7 @@ const msgResponse = 'OK'
 
 function start(state, cb = () => { }) {
   const UDPBenchmarkAPI = dgram.createSocket('udp4')
+  // XXX Server doesn't accept more than 9216 bytes per message for some reason
   UDPBenchmarkAPI
     .on('listening', () => cb({
       code: 200,

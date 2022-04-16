@@ -90,7 +90,7 @@ function startControllerServer(config) {
         setTimeout(() => stopBenchmarkServer(globalState), duration * 1000)
       }
     } catch (e) {
-      respondServerError(res, e, { code, view })
+      respondServerError(res, e, { view })
       resetGlobalState()
     }
   })
@@ -132,7 +132,7 @@ function startControllerServer(config) {
         return respond(res, { data }, { view })
       }
     } catch (e) {
-      respondServerError(res, e)
+      respondServerError(res, e, { view })
     }
   })
 

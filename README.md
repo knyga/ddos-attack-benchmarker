@@ -138,6 +138,7 @@ curl http://localhost:8070/stats?view=text
 1. Default HTTP Control API port in 8080.
 2. Access to some ports might require root permissions.
 3. You can't start multiple servers of same type.
+4. Known bug. UDP Benchmark Server doesn't accept more than 9216 bytes per message.
 
 ### With Docker
 Docker is not implemented yet.
