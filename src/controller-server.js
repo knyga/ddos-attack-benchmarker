@@ -1,25 +1,63 @@
 const Joi = require('joi')
 const validator = require('express-joi-validation').createValidator({})
 const express = require('express')
-const { Status, Type, cloneDefaultState, getStats } = require('./state')
+const { ResponseView } = require('./types')
+const { Status, Type, cloneDefaultState } = require('./state')
+const { getStats } = require('./stats')
 const { startBenchmarkServer, stopBenchmarkServer } = require('./benchmark-servers')
 
 
-function paramsSchema(joi) {
-  return validator.params(Joi.object(joi))
+const defaultResponseOptions = {
+  code: 200,
+  view: ResponseView.JSON,
 }
 
-function respond(resp, body) {
-  const code = body.code || 200
+function querySchema(joi) {
+  return validator.query(Joi.object(joi))
+}
+
+function respond(resp, body, inputOptions = defaultResponseOptions) {
+  const { code, view } = {
+    ...defaultResponseOptions,
+    ...inputOptions,
+  }
+
+  if (view === ResponseView.Text) {
+    if(typeof body === 'object') {
+      if (body.message) {
+        return resp.status(code).send(body.message)
+      } else if(body.data) {
+        return resp.status(code).send(body.data)
+      }
+    }
+    return resp.status(code).send(body.toString())
+  }
+
   return resp.status(code).send({
     code,
     ...body,
   })
 }
 
-function respondServerError(resp, err) {
-  const code = 500
-  return respond(resp, { code, message: err ? err.message : null })
+function respondBadRequest(resp, body, options = defaultResponseOptions) {
+  return respond(resp, body, {
+    code: 400,
+    ...options,
+  })
+}
+
+function respondNotFound(resp, body, options = defaultResponseOptions) {
+  return respond(resp, body, {
+    code: 404,
+    ...options,
+  })
+}
+
+function respondServerError(resp, err, options = defaultResponseOptions) {
+  return respond(resp, { message: err ? err.message : null }, {
+    code: 500,
+    ...options,
+  })
 }
 
 function startControllerServer(config) {
@@ -29,19 +67,20 @@ function startControllerServer(config) {
   }
 
   const httpController = express()
-  httpController.get('/start/:type/:port/:duration?', paramsSchema({
+  httpController.get('/start', querySchema({
     type: Joi.string().valid(...Object.values(Type)).required(),
     port: Joi.number().port().required(),
-    duration: Joi.number().min(1),
+    duration: Joi.number().min(1).default(null),
+    view: Joi.string().valid(...Object.values(ResponseView)).default(ResponseView.JSON),
   }), (req, res) => {
-    const { type, port, duration } = req.params
+    const { type, port, duration, view } = req.query
     resetGlobalState()
     globalState.benchmarkServer.type = type
     globalState.benchmarkServer.port = port
 
     try {
       globalState.server = startBenchmarkServer(globalState, ({ code, message }) => {
-        respond(res, { code, message })
+        respond(res, { message }, { code, view })
         if (code !== 200) {
           resetGlobalState()
         }
@@ -51,37 +90,46 @@ function startControllerServer(config) {
         setTimeout(() => stopBenchmarkServer(globalState), duration * 1000)
       }
     } catch (e) {
-      respondServerError(res, e)
+      respondServerError(res, e, { code, view })
       resetGlobalState()
     }
   })
 
-  httpController.get('/stop', (req, res) => {
+  httpController.get('/stop', querySchema({
+    view: Joi.string().valid(...Object.values(ResponseView)).default(ResponseView.JSON),
+  }), (req, res) => {
+    const { view } = req.query
+
     if (globalState.status !== Status.Started) {
-      return respond(res, { code: 400, message: 'Benchmark server was not started' })
+      return respond(res, {message: 'Benchmark server was not started' }, { view })
     }
 
     try {
       stopBenchmarkServer(globalState, () => {
-        const data = getStats(globalState)
+        const data = getStats(globalState, view)
         if (data === null) {
-          return respond(res, { code: 400, message: 'No stats' })
+          return respondBadRequest(res, { message: 'No stats' }, { view })
         } else {
-          return respond(res, { data })
+          return respond(res, { data }, { view })
         }
       })
     } catch (e) {
-      respondServerError(res, e)
+      respondServerError(res, e, { view })
     }
   })
 
-  httpController.get('/stats', (req, res) => {
+  httpController.get('/stats', querySchema({
+    view: Joi.string().valid(...Object.values(ResponseView)).default(ResponseView.JSON),
+  }), (req, res) => {
+    // TODO remove code duplication with stop
+    const { view } = req.query
+
     try {
-      const data = getStats(globalState)
+      const data = getStats(globalState, view)
       if (data === null) {
-        return respond(res, { code: 400, message: 'No stats' })
+        return respondBadRequest(res, { message: 'No stats' }, { view })
       } else {
-        return respond(res, { data })
+        return respond(res, { data }, { view })
       }
     } catch (e) {
       respondServerError(res, e)
@@ -89,7 +137,7 @@ function startControllerServer(config) {
   })
 
   httpController.use(function (req, res) {
-    return respond(res, { code: 404, message: 'Not found' })
+    return respondNotFound(res, { message: 'Not found' })
   })
 
   return httpController

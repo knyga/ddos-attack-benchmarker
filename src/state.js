@@ -2,8 +2,8 @@ const cloneDeep = require('lodash.clonedeep')
 
 
 const Status = {
-  Started: 'Started',
-  Stopped: Symbol('Stopped'),
+  Started: 'started',
+  Stopped: 'stopped',
 }
 
 const Type = {
@@ -37,36 +37,9 @@ function cloneDefaultState() {
   return cloneDeep(defaultState)
 }
 
-function getStats(state) {
-  const upperBound = state.time.lastRequestAt || new Date()
-  const { time: { firstRequestAt }, stats } = state
-  if (firstRequestAt === null) {
-    return null
-  }
-
-  const ms = upperBound.getTime() - firstRequestAt.getTime()
-  const seconds = Math.floor(ms / 1000)
-  return {
-    type: state.benchmarkServer.type,
-    duration: {
-      seconds,
-    },
-    requests: {
-      average: {
-        perSecond: {
-          count: stats.requests.total.count / seconds,
-          bytes: stats.requests.total.bytes / seconds,
-        },
-      },
-      ...stats.requests,
-    },
-  }
-}
-
 module.exports = {
   Type,
   Status,
-  getStats,
   defaultState,
   cloneDefaultState,
 }
