@@ -1,3 +1,5 @@
+// Sends single UDP package to destination
+// Usage example is node udp.js -p 8053 -l localhost
 const dgram = require('dgram')
 const { ArgumentParser } = require('argparse')
 
