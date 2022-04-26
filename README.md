@@ -82,11 +82,16 @@ interface Stats {
 `npm ci`.
 
 #### Start
-To start HTTP Control API on port 8070: `npm run start -- -p 8070` or `node app -p 8070`.
+To start HTTP Control API on port 8070: `npm run start -- -p 8070` or `node ddbenchmarker -p 8070` or `./ddbenchmarker.js -p 8070`.
+
+#### Arguments
+1. `-p, --port`. Port for HTTP Control API
+2. `-l, --duration`. Lifetime in seconds.
+3. `-d, --detach`. Detach process from execution.
 
 #### Usage example
 ```bash
-node app -p 8070 # start in separate process or daemon
+node ddbenchmarker -p 8070 # start in separate process or daemon
 
 curl http://localhost:8070/start?type=http&port=5555
 # {"code":200,"message":"HTTP Control API is listening on port 5555"}
