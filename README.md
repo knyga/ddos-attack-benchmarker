@@ -159,3 +159,6 @@ docker run -it -p 8080:80/tcp -p 5555:5555/tcp --rm oknyga/ddos-attack-benchmark
 #### Remarks
 1. Same remarks as for Without Docker.
 2. Plan ports you will be using ahead, read Published ports in Container networking documentation of the Docker: https://docs.docker.com/config/containers/container-networking/
+
+# License
+This project is distributed under the MIT License, see [LICENSE](./LICENSE) for more information.
