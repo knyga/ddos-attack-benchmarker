@@ -3,25 +3,22 @@ const express = require('express')
 
 function start(state, cb = () => { }) {
   const HTTPBenchmarkAPI = express()
-
-  let prevConnectionId = -1
-  let prevConnectionBytes = 0
+  const connections = new Map()
   HTTPBenchmarkAPI.use(function (req, res) {
     const { socket: { bytesRead, connectionIndex }} = req
     const connectionBytes = bytesRead || 0
-    if (prevConnectionId !== connectionIndex) {
-      prevConnectionBytes = 0
+    if (!connections.has(connectionIndex)) {
+      connections.set(connectionIndex, 0)
     }
     state.stats.requests.total.count += 1
-    state.stats.requests.total.bytes += connectionBytes - prevConnectionBytes
+    state.stats.requests.total.bytes += connectionBytes - connections.get(connectionIndex)
 
     if (state.time.firstRequestAt === null) {
       state.time.firstRequestAt = new Date()
     }
     state.time.lastRequestAt = new Date()
 
-    prevConnectionBytes = connectionBytes
-    prevConnectionId = connectionIndex
+    connections.set(connectionIndex, connectionBytes)
     res.status(200).send()
   })
 
