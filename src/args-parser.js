@@ -15,12 +15,6 @@ parser.add_argument('-l', '--duration', {
   type: 'int',
   help: 'Lifetime in seconds',
 })
-parser.add_argument('-d', '--detach', {
-  dest: 'detach',
-  action: 'store_true',
-  default: false,
-  help: 'Detach process from execution',
-})
 
 module.exports = {
   parser,
