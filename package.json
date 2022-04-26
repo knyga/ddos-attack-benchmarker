@@ -1,6 +1,6 @@
 {
   "name": "ddbenchmarker",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "HTTP/TCP/UDP server to generate benchmark details for DDoS (benchmark) tools",
   "main": "ddbenchmarker.js",
   "scripts": {

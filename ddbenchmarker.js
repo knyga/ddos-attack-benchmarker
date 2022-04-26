@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const pm2 = require('pm2')
+const path = require('path')
 
 const { parser } = require('./src/args-parser')
 const { startControllerServer } = require('./src/controller-server')
@@ -15,7 +16,7 @@ if (config.detach) {
     }
 
     pm2.start({
-      script: 'ddbenchmarker.js',
+      script: path.join(__dirname, 'ddbenchmarker.js'),
       args: Object.entries(config).map(([key, value]) => ((key === 'detach' && value) || typeof value === 'undefined') ? '' : `--${key}=${value}`).join(' '),
       name: 'ddbenchmarker'
     }, function (err) {
