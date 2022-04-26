@@ -143,6 +143,9 @@ curl http://localhost:8070/stats?view=text
 ### With Docker
 Docker is not implemented yet.
 
+#### Warning
+**Docker comes with performance limitations. It is not recommended to use it for benchmarking.**
+
 #### Prerequisites
 Docker.
 
